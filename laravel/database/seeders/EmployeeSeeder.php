@@ -1,18 +1,23 @@
 <?php
 
-namespace Database\Seeders;
-
-use Illuminate\Database\Seeder;
+namespace Database\Factories;
 use App\Models\Employee;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-class EmployeeSeeder extends Seeder
+class EmployeeFactory extends Factory
 {
-    /**
-     * Run the database seeds.
-     */
-    public function run(): void
+    protected $model = Employee::class;
+
+    public function definition()
     {
-        // Create 50 employees using the factory
-        Employee::factory()->count(10)->create();
+        return [
+            'firstname' => $this->faker->firstName,
+            'lastname' => $this->faker->lastName,
+            'age' => $this->faker->numberBetween(18, 65),
+            'gender' => $this->faker->randomElement(['male', 'female']),
+            'address' => $this->faker->address,
+            'email' => $this->faker->unique()->safeEmail,
+            'phone' => $this->faker->phoneNumber,
+        ];
     }
 }

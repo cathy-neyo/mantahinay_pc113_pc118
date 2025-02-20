@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 class StudentFactory extends Factory
 {
     protected $model = Student::class;
+    use HasFactory;
+
 
     /**
      * Define the model's default state.
@@ -26,7 +28,7 @@ class StudentFactory extends Factory
             'gender' => $this->faker->randomElement(['male', 'female']),
             'address' => $this->faker->address,
             'email' => $this->faker->unique()->safeEmail,
-            'phone' => $this->faker->phoneNumber,
+            'course' => $this->faker->phoneNumber,
         ];
     }
 }

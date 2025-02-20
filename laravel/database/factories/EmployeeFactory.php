@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class EmployeeFactory extends Factory
 {
+    use HasFactory;
+
     /**
      * Define the model's default state.
      *
@@ -16,6 +18,7 @@ class EmployeeFactory extends Factory
      */
     public function definition(): array
     {
+        
         return [
             'firstname' => $this->faker->firstName,
             'lastname' => $this->faker->lastName,
