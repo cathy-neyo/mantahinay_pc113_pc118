@@ -7,3 +7,7 @@
 
     Route::get('/employees', [EmployeeController::class, 'index']);
     Route::get('/students', [StudentController::class, 'index']);
+
+    Route::get('/students/search', [StudentController::class, 'index']);
+    Route::get('/employees/search', [EmployeeController::class, 'index']);
+
