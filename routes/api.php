@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\UserDashboardController;
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EmployeeController;
@@ -26,3 +27,10 @@ Route::get('students/{student}', [StudentController::class, 'show']);
 Route::put('students/{student}', [StudentController::class, 'update']);
 Route::delete('students/{student}', [StudentController::class, 'destroy']);
 
+Route::middleware(['auth:sanctum', 'role:0'])->get('/users', [AuthController::class, 'index']);
+Route::middleware(['auth:sanctum', 'role:1'])->get('/udashboard', [UserDashboardController::class, 'index']);
+
+
+Route::get('unknown', function () {
+    return response()->json(['message' => 'ok']);
+});
