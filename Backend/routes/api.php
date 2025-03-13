@@ -28,7 +28,7 @@ Route::delete('students/{student}', [StudentController::class, 'destroy']);
 
 
 
-Route::get('/users', [AuthController::class, 'index']);
+Route::get('/usefrs', [AuthController::class, 'index']);
 
 
 
