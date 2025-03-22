@@ -13,4 +13,5 @@ class UserDashboardController extends Controller
             'user' => Auth::user(),
         ]);
     }
+    
 }

@@ -23,8 +23,24 @@ class AuthController extends Controller
         }
     }
 
+    
     public function login(Request $request)
     {
+
+        $credentials = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
+        if (Auth::attempt($credentials)) {
+            $user = Auth::user();
+            $token = $user->createToken('authToken')->plainTextToken;
+
+            return response()->json(['token' => $token], 200);
+        }
+
+        return response()->json(['message' => 'Invalid credentials'], 401);
+    
         try {
             // Attempt to log in user
             if (Auth::attempt([
@@ -59,5 +75,13 @@ class AuthController extends Controller
             // Handle any exceptions
             return response()->json(['error' => 'Failed to retrieve user: ' . $e->getMessage()], 500);
         }
+    }
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect('/l ogin');
     }
 }

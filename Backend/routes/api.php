@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\StudentController;
+use Illuminate\Http\Request;
 
 // Route::post('/login', [AuthController::class, 'login']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -28,14 +29,23 @@ Route::delete('students/{student}', [StudentController::class, 'destroy']);
 
 
 
-Route::get('/usefrs', [AuthController::class, 'index']);
+Route::get('/users', [AuthController::class, 'index']);
 
 
 
-Route::middleware(['auth:sanctum', 'role:0'])->get('/users', [AuthController::class, 'index']);
+Route::middleware(['auth:sanctum', 'role:0'])->get('/users', [AuthController::class, 'index']); //only a login user can access rhis api
 Route::middleware(['auth:sanctum', 'role:1'])->get('/udashboard', [UserDashboardController::class, 'index']);
-
+//new
+Route::get('/dashboard', function () {
+    return view('dashboard'); 
+})->middleware('auth'); // Ensure user is logged in
+Route::middleware('auth:sanctum')->get('/students', function () {
+    return \App\Models\Student::all();
+});
+//kutob dire
 
 Route::get('unknown', function () {
     return response()->json(['message' => 'ok']);
+
+
 });
