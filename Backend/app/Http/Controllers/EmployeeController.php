@@ -39,6 +39,7 @@ class EmployeeController extends Controller
         ]);
 
         $employee = Employee::create($validatedData);
+
         return response()->json([
             'message' => 'Employee created successfully',
             'employee' => $employee,

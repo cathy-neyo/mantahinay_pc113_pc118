@@ -6,6 +6,24 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\StudentController;
 use Illuminate\Http\Request;
+use App\Http\Controllers\API\UserController;
+
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('users', UserController::class);
+});
+
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/users', [UserController::class, 'index']);
+    Route::post('/users', [UserController::class, 'store']);
+    Route::get('/users/{id}', [UserController::class, 'show']);
+    Route::put('/users/{id}', [UserController::class, 'update']);
+    Route::delete('/users/{id}', [UserController::class, 'destroy']);
+});
+
+
+
 
 // Route::post('/login', [AuthController::class, 'login']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -15,10 +33,11 @@ Route::get('/students', [StudentController::class, 'index']);
 Route::get('/students/search', [StudentController::class, 'index']);
 Route::get('/employees/search', [EmployeeController::class, 'index']);
 
+
 Route::get('employees', [EmployeeController::class, 'index']);
 Route::post('employees', [EmployeeController::class, 'store']);
-Route::get('employees/{employee}', [EmployeeController::class, 'show']);
-Route::put('employees/{employee}', [EmployeeController::class, 'update']);
+Route::get('employees/{id}', [EmployeeController::class, 'show']);
+Route::put('employees/{id}', [EmployeeController::class, 'update']);
 Route::delete('employees/{employee}', [EmployeeController::class, 'destroy']);
 
 Route::get('students', [StudentController::class, 'index']);
