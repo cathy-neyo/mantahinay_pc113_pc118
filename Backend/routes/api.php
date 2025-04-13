@@ -6,12 +6,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\StudentController;
 use Illuminate\Http\Request;
-use App\Http\Controllers\API\UserController;
 
 
-Route::middleware('auth:sanctum')->group(function () {
-    Route::apiResource('users', UserController::class);
-});
+
 
 
 Route::middleware('auth:sanctum')->group(function () {
