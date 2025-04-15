@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -15,23 +15,21 @@ class UserController extends Controller
 
     public function store(Request $request)
 {
-    $request->validate([
-        'name' => 'required',
-        'email' => 'required|email|unique:users',
-        'password' => 'required|min:6',
-        'role' => 'required|in:0,1',
+    $validatedData = $request->validate([
+        'name' => 'required|string',
+        'email' => 'required|email|unique:users,email',
+        'role' => 'required|string',
+        'password' => 'required|string|min:8',
     ]);
 
-    $user = User::create([
-        'name' => $request->name,
-        'email' => $request->email,
-        'password' => bcrypt($request->password), // <- important
-        'role' => $request->role,
-    ]);
+    $validatedData['password'] = bcrypt($validatedData['password']); 
+    $user = User::create($validatedData);
 
-    return response()->json($user, 201);
+    return response()->json([
+        'message' => 'User created successfully',
+        'user' => $user,
+    ], 201);
 }
-
 
     public function show($id)
     {
@@ -39,20 +37,28 @@ class UserController extends Controller
     }
 
     public function update(Request $request, $id)
-{
-    $user = User::findOrFail($id);
-    $user->update([
-        'name' => $request->name,
-        'email' => $request->email,
-        'role' => $request->role,
-    ]);
+    {
+        $request->validate([
+            'name' => 'required|string',
+            'email' => 'required|email|unique:users,email,'.$id,
+            'role' => 'required|in:0,1',
+        ]);
 
-    return response()->json($user);
-}
+        $user = User::findOrFail($id);
+        $user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'role' => $request->role,
+        ]);
+
+        return response()->json($user);
+    }
 
     public function destroy($id)
     {
-        User::findOrFail($id)->delete();
-        return response()->json(['message' => 'User deleted']);
+        $user = User::findOrFail($id);
+        $user->delete();
+
+        return response()->json(['message' => 'User deleted successfully']);
     }
 }
