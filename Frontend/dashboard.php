@@ -26,6 +26,9 @@
             position: fixed;
             transition: all 0.3s;
             box-shadow: 5px 0px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         .sidebar .logo {
@@ -54,6 +57,14 @@
             border-radius: 5px;
         }
 
+        .menu {
+            flex-grow: 1;
+        }
+
+        .logout-btn {
+            padding: 15px;
+        }
+
         .content {
             margin-left: 250px;
             padding: 20px;
@@ -74,6 +85,21 @@
             padding: 5px 10px;
             cursor: pointer;
             z-index: 10;
+        }
+
+        .dropdown-menu {
+            background-color: rgba(255, 255, 255, 0.2);
+            border: none;
+        }
+
+        .dropdown-menu a {
+            color: white;
+            padding: 10px;
+            display: block;
+        }
+
+        .dropdown-menu a:hover {
+            background-color: rgba(255, 255, 255, 0.3);
         }
 
         @media (max-width: 768px) {
@@ -100,71 +126,43 @@
 
     <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
     <div class="sidebar" id="sidebar">
-        <div class="logo">Dashboard</div>
-        <a href="#"><i class="fas fa-home"></i> Home</a>
-        <a href="#"><i class="fas fa-users"></i> User List</a>
-        <button onclick="logout()" class="btn btn-light w-100 mt-3 text-danger"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        <div class="menu">
+            <div class="logo">Dashboard</div>
+            <a href="dashboard.php"><i class="fas fa-home"></i> Home</a>
+            
+            <!-- Dropdown Menu for Users -->
+            <div class="dropdown">
+                <a href="#" class="dropdown-toggle" id="userDropdown" onclick="toggleDropdown()">
+                    <i class="fas fa-users"></i> User List <i class="fas fa-chevron-down"></i>
+                </a>
+                <div class="dropdown-menu" id="dropdownMenu">
+                    <a href="users.php"><i class="fas fa-user"></i> Users</a>
+                    <a href="employees.php"><i class="fas fa-briefcase"></i> Employees</a>
+                    <a href="students.php"><i class="fas fa-graduation-cap"></i> Students</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Logout Button at the Bottom -->
+        <div class="logout-btn">
+            <button onclick="logout()" class="btn btn-light w-100 text-danger">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
     </div>
 
     <div class="content">
         <h2 class="text-center text-pink">Welcome to Your Dashboard</h2>
-
-        <table class="table table-bordered table-striped">
-            <thead class="bg-pink text-white">
-                <tr>
-                    <th>#</th>
-                    <th>Firstname</th>
-                    <th>Lastname</th>
-                    <th>Age</th>
-                    <th>Gender</th>
-                    <th>Address</th> 
-                    <th>Email</th>
-                    <th>Contact Number</th>
-                    <th>Course</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Students data will be fetched here -->
-            </tbody>
-        </table>
     </div>
 
-    <script src="//cdn.datatables.net/2.2.2/js/dataTables.min.js"></script>
     <script>
-        $(document).ready(function () {
-            fetchStudents();
-        });
+        function toggleSidebar() {
+            document.getElementById("sidebar").classList.toggle("open");
+        }
 
-        function fetchStudents() {
-            $.ajax({
-                url: 'http://127.0.0.1:8000/api/students',
-                method: 'GET',
-                headers: {
-                    'Authorization': 'Bearer ' + localStorage.getItem('token')
-                },
-                success: function (data) {
-                    let tableBody = '';
-                    data.forEach(student => {
-                        tableBody += `
-                            <tr>
-                                <td>${student.id}</td>
-                                <td>${student.firstname}</td>
-                                <td>${student.lastname}</td>
-                                <td>${student.age}</td>
-                                <td>${student.gender}</td>
-                                <td>${student.address}</td>
-                                <td>${student.email}</td>
-                                <td>${student.contact_number}</td>
-                                <td>${student.course}</td>
-                            </tr>
-                        `;
-                    });
-                    $('.table tbody').html(tableBody);
-                },
-                error: function (error) {
-                    console.error('Error fetching students:', error);
-                }
-            });
+        function toggleDropdown() {
+            let dropdownMenu = document.getElementById("dropdownMenu");
+            dropdownMenu.style.display = (dropdownMenu.style.display === "block") ? "none" : "block";
         }
 
         function logout() {
