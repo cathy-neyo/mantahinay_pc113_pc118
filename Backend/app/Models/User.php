@@ -11,18 +11,24 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-    protected $fillable = ['name', 'email', 'password', 'role'];
-
-    protected $hidden = [
+    protected $fillable = [
+        'name',
+        'email',
         'password',
-        'remember_token',
+        'role'
     ];
+    
 
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            // Gi-remove ang 'password' => 'hashed'
-        ];
-    }
+    // protected $hidden = [
+    //     'password',
+    //     'remember_token',
+    // ];
+
+    // protected function casts(): array
+    // {
+    //     return [
+    //         'email_verified_at' => 'datetime',
+    //         // Gi-remove ang 'password' => 'hashed'
+    //     ];
+    // }
 }
