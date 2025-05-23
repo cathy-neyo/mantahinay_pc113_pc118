@@ -6,59 +6,53 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use Validator;
 
 class AuthController extends Controller
 {
-    // REGISTER USER
     public function register(Request $request)
-    {
-        $request->validate([
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|string|email|unique:users',
-            'password' => 'required|string|min:6|confirmed',
-            'role'     => 'required|in:0,1,2', // 0 = Admin, 1 = Coordinator, 2 = Evaluator
-        ]);
+{
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|unique:users',
+        'password' => 'required|min:6|confirmed',
+    ]);
 
-        $user = User::create([
-            'name'     => $request->name,
-            'email'    => $request->email,
-            'password' => Hash::make($request->password),
-            'role'     => $request->role,
-        ]);
+    $user = User::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'password' => bcrypt($request->password),
+        'role' => 1 // Default role (e.g., Evaluator or Student)
+    ]);
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+    return response()->json([
+        'status' => true,
+        'message' => 'Registration successful',
+        'user' => $user
+    ]);
+}
 
-        return response()->json([
-            'message' => 'Registration successful',
-            'token'   => $token,
-            'user'    => $user
-        ]);
+
+
+public function login(Request $request)
+{
+    $user = User::where('email', $request->email)->first();
+
+    if (!$user || !Hash::check($request->password, $user->password)) {
+        return response()->json(['error' => 'Invalid credentials'], 401);
     }
 
-    // LOGIN USER
-    public function login(Request $request)
-    {
-        $request->validate([
-            'email'    => 'required|email',
-            'password' => 'required'
-        ]);
+    $token = $user->createToken('auth_token')->plainTextToken;
 
-        $user = User::where('email', $request->email)->first();
+    return response()->json([
+        'token' => $token,
+        'user' => $user,
+        'redirect_url' => $user->role == 0 ? 'admin-dashboard.php' :
+                         ($user->role == 1 ? 'coordinator-dashboard.php' : 'evaluator-dashboard.php')
+    ]);
+}
 
-        if (!$user || !Hash::check($request->password, $user->password)) {
-            return response()->json(['message' => 'Invalid credentials'], 401);
-        }
-
-        $token = $user->createToken('auth_token')->plainTextToken;
-
-        return response()->json([
-            'message' => 'Login successful',
-            'token'   => $token,
-            'user'    => $user
-        ]);
-    }
-
-    // LOGOUT
+  // LOGOUT
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
